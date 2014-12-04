@@ -20,12 +20,23 @@ window.onload = function()
 
 	//add the sphere to the scene
 	scene.add(sphere);
-    
+
+    var controls = new THREE.OrbitControls(camera);
+	controls.target.set(0, 0, 0);
+	controls.rotateSpeed = 0.4;
+	controls.zoomSpeed   = 1.2;
+	controls.panSpeed    = 0.3;
+	controls.noRotate    = false;
+	controls.noZoom      = true;
+	controls.noPan       = true;
+
     var render = function ()
     {
-        requestAnimationFrame( render );
+    	controls.update();
+	   	renderer.render( scene, camera )
+       	requestAnimationFrame( render );
 
-        renderer.render(scene, camera);
+       	renderer.render(scene, camera);
     };
 
     render();
