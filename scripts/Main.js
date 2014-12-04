@@ -1,5 +1,6 @@
 window.onload = function()
 {
+<<<<<<< .merge_file_a09120
 	//I'm gonna set a scene!
 
 	//scene size
@@ -13,36 +14,23 @@ window.onload = function()
 
 	//get the DOM element to attach to
 	var container = $('#container');
+=======
+>>>>>>> .merge_file_a08680
 
 	//create a WebGL renderer, a camera, and a scene
-	var renderer = new THREE.WebGLRenderer();
-
-	var camera =
-		new THREE.PerspectiveCamera(
-			VIEW_ANGLE,
-			ASPECT,
-			NEAR,
-			FAR);
-
-	var scene = new THREE.Scene();
-
-	//add the camera to the scene
-	scene.add(camera);
-
-	//the camera starts at 0,0,0 so we must pull it back a bit
-	camera.position.z = 300;
-
-	//set renderer size, thus launching it
-	renderer.setSize(WIDTH, HEIGHT);
-
-	//attach the renderer to the container inside the DOM
-	$container.append(renderer.domElement);
-
-	//and now I'm gonna make a sphere
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild( renderer.domElement );
+    
 	
-	//sphere vars
-	var radius = 50, segments = 16, rings = 16;
+    var scene = new THREE.Scene();
+    
+    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+    scene.add(camera);
 
+	camera.position.z = 100;
+
+<<<<<<< .merge_file_a09120
 	//create the sphere's material
 	var sphereMaterial = new THREE.MeshBasicMaterial(
 		{
@@ -59,4 +47,21 @@ window.onload = function()
 
 	//add the sphere to the scene
 	scene.add(sphere);
+=======
+    //create a new mesh with sphere geometry
+    var sphereMaterial = new THREE.MeshBasicMaterial({color : 0xffffff, transparent : true, opacity : 0.5});
+	var sphere = new THREE.Mesh(new THREE.SphereGeometry(50, 64, 64), sphereMaterial);
+
+	//add the sphere to the scene
+	scene.add(sphere);
+    
+    var render = function ()
+    {
+        requestAnimationFrame( render );
+
+        renderer.render(scene, camera);
+    };
+
+    render();
+>>>>>>> .merge_file_a08680
 };
