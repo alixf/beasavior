@@ -12,7 +12,7 @@ window.onload = function()
 	FAR = 10000;
 
 	//get the DOM element to attach to
-	var $container = $('#container');
+	var container = $('#container');
 
 	//create a WebGL renderer, a camera, and a scene
 	var renderer = new THREE.WebGLRenderer();
@@ -43,8 +43,14 @@ window.onload = function()
 	//sphere vars
 	var radius = 50, segments = 16, rings = 16;
 
+	//create the sphere's material
+	var sphereMaterial = new THREE.MeshBasicMaterial(
+		{
+			color: 0xCC0000
+		});
+
 	//create a new mesh with sphere geometry
-	var sphere = new THREE;Mesh(
+	var sphere = new THREE.Mesh(
 		new THREE.SphereGeometry(
 			radius,
 			segments,
@@ -53,5 +59,4 @@ window.onload = function()
 
 	//add the sphere to the scene
 	scene.add(sphere);
-
 };
