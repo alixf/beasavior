@@ -9,41 +9,34 @@ window.onload = function()
 	
     var scene = new THREE.Scene();
     
-    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+    //var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+    var camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0.001, 1000 );
     scene.add(camera);
 
-	camera.position.z = 100;
-	camera.position.y = 0;
+	camera.position.z = 1000;
+	//camera.position.y = 500;
     camera.lookAt(new THREE.Vector3(0,0,0));
 
     //create a new mesh with sphere geometry
     //var sphereMaterial = new THREE.MeshBasicMaterial({map:THREE.ImageUtils.loadTexture('uv.png'), transparent : true, opacity : 0.5});
     var sphereMaterial = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture('textures/earth.jpg') } );
-	var sphere = new THREE.Mesh(new THREE.SphereGeometry(50, 64, 64), sphereMaterial);
+	var radius = 300;
+    var sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 64), sphereMaterial);
 
+    
     var projector = new THREE.Projector();
 	var mouseVector = new THREE.Vector3();
     
 	//add the sphere to the scene
 	scene.add(sphere);
 
-    var u = 0.62;
-    var v = 0.62;
     
-    var PI = 3.14159;
-    var theta = 2.0 * PI * u;
-    var phi = PI * v;
-
-    x = Math.cos(theta) * Math.sin(phi) * 50;
-    y = Math.sin(theta) * Math.sin(phi) * 50;
-    z = -Math.cos(phi) * 50;
-	var newSphere = new THREE.Mesh(new THREE.SphereGeometry(5, 16, 16), new THREE.MeshBasicMaterial({color : 0xFF0000, transparent : true, opacity : 0.5}));
-    newSphere.position.set(x, y, z);
+	var newSphere = new THREE.Mesh(new THREE.SphereGeometry(radius/10, 16, 16), new THREE.MeshBasicMaterial({color : 0xFF0000, transparent : true, opacity : 0.5}));
     sphere.add(newSphere);
     
     
-	window.addEventListener( 'mousemove', onMouseMove, false );
-	window.addEventListener( 'resize', onWindowResize, false );
+	window.addEventListener('mousemove', onMouseMove, false);
+	window.addEventListener('resize', onWindowResize, false);
     
 	function onMouseMove(e)
     {
@@ -74,10 +67,28 @@ window.onload = function()
 		camera.updateProjectionMatrix();
 	}
     
-    var render = function ()
+    function getXYZFromUV(u, v, radius)
     {
+        var u = 1.5 - u;
+        var v = 1 - v; 
+        var theta = 2.0 * Math.PI * u;
+        var phi = Math.PI * v;
+        x = Math.cos(theta) * Math.sin(phi) * radius;
+        y = Math.sin(theta) * Math.sin(phi) * radius;
+        z = -Math.cos(phi) * radius;
+        return new THREE.Vector3(x, z, y);
+    }
+    
+    i = 0;
+    var render = function()
+    {
+        i++;
         requestAnimationFrame(render);
-        sphere.rotateY(0.005);
+        sphere.rotateY(0.01);
+        
+        var newPosition = getXYZFromUV(0.917, 0.690, radius);
+        newSphere.position.set(newPosition.x, newPosition.y, newPosition.z);
+        
         renderer.render(scene, camera);
     };
 
