@@ -15,7 +15,7 @@ window.onload = function()
 	camera.position.z = 100;
 
     //create a new mesh with sphere geometry
-    var sphereMaterial = new THREE.MeshBasicMaterial({color : 0xffffff, transparent : true, opacity : 0.5});
+    var sphereMaterial = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture('textures/earth.jpg') } );
 	var sphere = new THREE.Mesh(new THREE.SphereGeometry(50, 64, 64), sphereMaterial);
 
 	//add the sphere to the scene
