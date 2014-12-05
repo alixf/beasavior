@@ -21,22 +21,29 @@ window.onload = function()
     //var sphereMaterial = new THREE.MeshBasicMaterial({map:THREE.ImageUtils.loadTexture('uv.png'), transparent : true, opacity : 0.5});
     var sphereMaterial = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture('textures/earth.jpg') } );
 	var radius = 300;
-    var sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 64), sphereMaterial);
+    var earth = new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 64), sphereMaterial);
+	scene.add(earth);
 
-    
-    var projector = new THREE.Projector();
-	var mouseVector = new THREE.Vector3();
-    
-	//add the sphere to the scene
-	scene.add(sphere);
-
-    
-	var newSphere = new THREE.Mesh(new THREE.SphereGeometry(radius/10, 16, 16), new THREE.MeshBasicMaterial({color : 0xFF0000, transparent : true, opacity : 0.5}));
-    sphere.add(newSphere);
-    
+    //var projector = new THREE.Projector();
+	//var mouseVector = new THREE.Vector3();
     
 	window.addEventListener('mousemove', onMouseMove, false);
 	window.addEventListener('resize', onWindowResize, false);
+    
+    var area = new Area(0.917, 0.690, "crisis");
+    earth.add(area);
+    
+    function getXYZFromUV(u, v, radius)
+    {
+        var u = 1.5 - u;
+        var v = 1 - v; 
+        var theta = 2.0 * Math.PI * u;
+        var phi = Math.PI * v;
+        x = Math.cos(theta) * Math.sin(phi) * radius;
+        y = Math.sin(theta) * Math.sin(phi) * radius;
+        z = -Math.cos(phi) * radius;
+        return new THREE.Vector3(x, z, y);
+    }
     
 	function onMouseMove(e)
     {
@@ -62,32 +69,25 @@ window.onload = function()
     {
 		containerWidth = window.innerWidth;
 		containerHeight = window.innerHeight;
-		renderer.setSize( containerWidth, containerHeight );
+		renderer.setSize(containerWidth, containerHeight);
 		camera.aspect = containerWidth / containerHeight;
 		camera.updateProjectionMatrix();
 	}
     
-    function getXYZFromUV(u, v, radius)
-    {
-        var u = 1.5 - u;
-        var v = 1 - v; 
-        var theta = 2.0 * Math.PI * u;
-        var phi = Math.PI * v;
-        x = Math.cos(theta) * Math.sin(phi) * radius;
-        y = Math.sin(theta) * Math.sin(phi) * radius;
-        z = -Math.cos(phi) * radius;
-        return new THREE.Vector3(x, z, y);
-    }
+    earth.rotateY(1.5);
     
-    i = 0;
+    var lastTime = (new Date()).getTime();
     var render = function()
     {
-        i++;
-        requestAnimationFrame(render);
-        sphere.rotateY(0.01);
+        // Compute time
+        var time = (new Date()).getTime();
+        var dt = (time - lastTime) / 1000.0;
+        lastTime = time;
         
-        var newPosition = getXYZFromUV(0.917, 0.690, radius);
-        newSphere.position.set(newPosition.x, newPosition.y, newPosition.z);
+        
+        requestAnimationFrame(render);
+        
+        area.update(dt);
         
         renderer.render(scene, camera);
     };
