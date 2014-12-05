@@ -5,7 +5,7 @@ window.Area = function(x, y, type)
         material = new THREE.MeshBasicMaterial({color : 0xFF0000, transparent : true, opacity : 0.5});
     
     var geometry = new THREE.SphereGeometry(50, 16, 16);
-    area = new THREE.Mesh(geometry, material);
+    var area = new THREE.Mesh(geometry, material);
     
     function getXYZFromUV(u, v, radius)
     {
@@ -26,7 +26,6 @@ window.Area = function(x, y, type)
         
         var scaleFactor = area.clock - Math.floor(area.clock);
         var alphaFactor =-(scaleFactor*2-1)*(scaleFactor*2-1)+1;
-        console.log(alphaFactor);
         area.material.opacity = 0.33 + alphaFactor * 0.33;
         
         area.scale.set(scaleFactor,scaleFactor,scaleFactor);
