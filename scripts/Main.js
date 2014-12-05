@@ -9,9 +9,13 @@ window.onload = function()
 	
     var scene = new THREE.Scene();
     
-    //var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-    var camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0.001, 1000 );
+    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 2100 );
+    //var camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0.001, 1000 );
     scene.add(camera);
+
+    var skydome = new Skydome(THREE.ImageUtils.loadTexture('textures/skydome.jpg'));
+    scene.add(skydome);
+    console.log("hi");
 
 	camera.position.z = 1000;
 	//camera.position.y = 500;
@@ -26,7 +30,7 @@ window.onload = function()
     
     var projector = new THREE.Projector();
 	var mouseVector = new THREE.Vector3();
-    
+
 	//add the sphere to the scene
 	scene.add(sphere);
 
@@ -90,11 +94,11 @@ window.onload = function()
     }
     
     i = 0;
+
     var render = function()
     {
     	controls.update();
         i++;
-	   	renderer.render( scene, camera )
         requestAnimationFrame(render);
         //sphere.rotateY(0.01);
         
