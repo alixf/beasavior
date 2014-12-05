@@ -9,9 +9,12 @@ window.onload = function()
 	
     var scene = new THREE.Scene();
     
-    //var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-    var camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0.001, 1000 );
+    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+    //var camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0.001, 1000 );
     scene.add(camera);
+    
+    var vector = new THREE.Vector3();
+    var raycaster = new THREE.Raycaster();
 
 	camera.position.z = 1000;
 	camera.lookAt(new THREE.Vector3(0,0,0));
@@ -39,8 +42,11 @@ window.onload = function()
 	controls.noZoom      = true;
 	controls.noPan       = true;
 
+    var mouse = {x:0.0, y:0.0};
 	function onMouseMove(e)
     {
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     };
     
     function onWindowResize(e)
@@ -62,8 +68,16 @@ window.onload = function()
         var dt = (time - lastTime) / 1000.0;
         lastTime = time;
         
-        
         requestAnimationFrame(render);
+        
+        vector.set(mouse.x, mouse.y, 0.1).unproject(camera);
+        raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
+        var intersections = raycaster.intersectObjects(scene.children, true);
+        for(i = 0; i < intersections.length; ++i)
+        {
+            if(intersections[i].object.hover != null)
+                intersections[i].object.hover();
+        }
         
     	controls.update();
 	   	

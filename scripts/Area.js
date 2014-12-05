@@ -6,6 +6,7 @@ window.Area = function(x, y, type)
     
     var geometry = new THREE.SphereGeometry(50, 16, 16);
     var area = new THREE.Mesh(geometry, material);
+    area.type = type;
     
     function getXYZFromUV(u, v, radius)
     {
@@ -30,6 +31,11 @@ window.Area = function(x, y, type)
         
         area.scale.set(scaleFactor,scaleFactor,scaleFactor);
     }
+    
+    area.hover = function()
+    {
+        console.log(area.type);
+    };
     
     var position = getXYZFromUV(x, y, 300);
     area.position.set(position.x, position.y, position.z);
