@@ -86,8 +86,8 @@ window.onload = function()
 	controls.noRotate    = false;
 	controls.noZoom      = false;
 	controls.noPan       = true;
-	controls.minDistance = 500;
-	controls.maxDistance = 1200;
+	controls.minDistance = 800;
+	controls.maxDistance = 1000;
 
     var mouse = {x:0.0, y:0.0};
 
@@ -157,6 +157,8 @@ window.onload = function()
         chrono += dt;
 
 
+        
+        skydome.rotateY(dt * 0.033);
         
         requestAnimationFrame(render);
         update_sound(audio.osc, audio.gain, 440, audio.pan, (area2.position.x-camera.position.x)/200,(area2.position.y-camera.position.y)/200,(area2.position.z-camera.position.z)/200);
