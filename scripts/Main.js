@@ -55,27 +55,19 @@ window.onload = function()
 	var radius = 300;
     var earth = new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 64), sphereMaterial);
 	scene.add(earth);
-    //var axisHelper = new THREE.AxisHelper( 700 );
-    //scene.add( axisHelper );
+    
+	var objectSelected = null;
+    var pathStart = null;
+    var pathEnd = null;
     var area1 = new Area(0.5, 0.26, "cool");
     var area2 = new Area(0.914, 0.705, "crisis");
     earth.add(area1);
     earth.add(area2);
+    //earth.add(area3);
 
-    var geometrySpline = new THREE.Geometry();
-    var i = 0;
-    var count = 64.0;
-    for(;i < count; ++i)
-        geometrySpline.vertices[i] = new THREE.Vector3(area1.position.x * (1-i/count) + area2.position.x * (i/count),
-                                                       area1.position.y * (1-i/count) + area2.position.y * (i/count),
-                                                       area1.position.z * (1-i/count) + area2.position.z * (i/count)).normalize().multiplyScalar(310);
-    
-    geometrySpline.computeLineDistances();
-    var object = new THREE.Line(geometrySpline, new THREE.LineBasicMaterial( { color: 0xffffff } ), THREE.LineStrip);
-    earth.add(object);
     
     container.on('mousemove', onMouseMove);
-	//window.addEventListener('resize', onWindowResize, false);
+	container.on('click', onMouseDown);
 
     
     var controls = new THREE.OrbitControls(camera, container[0]);
@@ -86,15 +78,64 @@ window.onload = function()
 	controls.noRotate    = false;
 	controls.noZoom      = false;
 	controls.noPan       = true;
-	controls.minDistance = 500;
-	controls.maxDistance = 1200;
+	controls.minDistance = 800;
+	controls.maxDistance = 1000;
 
     var mouse = {x:0.0, y:0.0};
+
+	function generateArea(){
+		var ret;
+		var id = Math.floor((Math.random() * 10) + 0);
+		var crisisOrCool = Math.floor((Math.random()*100)+0);
+		if(crisisOrCool >= 65)
+			crisisOrCool = "cool";
+		else crisisOrCool = "crisis";
+
+		return ret = {id : id, crisisOrCool : crisisOrCool};
+	}
+
+	function areaUnavailable(area){
+		var randomAreaInfos = generateArea();
+		newArea = new Area(cities[randomAreaInfos.id].x, cities[randomAreaInfos.id].y, randomAreaInfos.crisisOrCool);
+		console.log("area is already a node. rerolling");
+	}
+
+	function rerollArea(area){
+		var newArea;
+		earth.children.forEach(function(entry){
+		   		if(entry.name == area.name){
+		   			return false;
+				}
+			});
+		return true;
+	}
+    
 	function onMouseMove(e)
     {
-        mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
-        mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+        mouse.x = ( (e.pageX-container.offset().left) / container.width() ) * 2 - 1;
+        mouse.y = - ( (e.pageY-container.offset().top) / container.height() ) * 2 + 1;
     };
+    
+    function onMouseDown(e)
+    {
+        if(objectSelected != null)
+        {
+            if(pathStart == null)
+            {
+                pathStart = objectSelected;
+            }
+            else if(pathEnd == null)
+            {
+                pathEnd = objectSelected;
+                
+                var path = new Path(pathStart.position, pathEnd.position);
+                earth.add(path);
+                
+                pathStart = null;
+                pathEnd = null;
+            }
+        }
+    }
     
     function onWindowResize(e)
     {
@@ -104,11 +145,20 @@ window.onload = function()
 		camera.aspect = containerWidth / containerHeight;
 		camera.updateProjectionMatrix();
 	}
+
+	function addNewNode(){
+		var randomAreaInfos = generateArea();
+		var area = new Area(cities[randomAreaInfos.id].x, cities[randomAreaInfos.id].y, randomAreaInfos.crisisOrCool);
+		while(areaUnavailable(area)){
+			area = rerollArea;
+		}
+		earth.add(area);
+	}
     
     earth.rotateY(1.5);
     
     var lastTime = (new Date()).getTime();
-
+    var chrono = 0;
     var render = function()
     {
         //console.log(document.querySelector('#slider1').value);
@@ -117,6 +167,9 @@ window.onload = function()
         var time = (new Date()).getTime();
         var dt = (time - lastTime) / 1000.0;
         lastTime = time;
+        chrono += dt;
+
+        skydome.rotateY(dt * 0.033);
         
         update_eq_crisis(crisis.low,crisis.mid,crisis.high,
             document.querySelector('#slider1').value,
@@ -142,21 +195,28 @@ window.onload = function()
 
         vector.set(mouse.x, mouse.y, 0.1).unproject(camera);
         raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
-        var intersections = raycaster.intersectObjects(scene.children, true);
+        
+        objectSelected = null;
+        var intersections = raycaster.intersectObjects(earth.children, true);
         for(i = 0; i < intersections.length; ++i)
-        {
-            if(intersections[i].object.hover != null)
-                intersections[i].object.hover();
-        }
+            objectSelected = intersections[i].object;
         
     	controls.update();
 	   	
-        area1.update(dt);
-        area2.update(dt);
-        
+    	if(chrono > 15){
+    		addNewNode();
+    		chrono = 0;
+    	}
+
+	   	earth.children.forEach(function(entry){
+	   		if(entry.update != null)
+	   			entry.update(dt);
+		});
+
        	renderer.render(scene, camera);
     };
 
     render();
 
 };
+

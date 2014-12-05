@@ -25,12 +25,12 @@
             }
             h1
             {
-                margin : auto;
-                max-width : 1000px;
+                margin : 50px auto;
+                max-width : 800px;
             }
             h1 img
             {
-                max-width : 1000px;
+                max-width : 800px;
             }
             p
             {
@@ -61,6 +61,11 @@
                 float : left;
                 margin-right : 30px;
             }
+            #rules img.right
+            {
+                float : right;
+                margin-left : 30px;
+            }
             h2
             {
                 text-align : center;
@@ -75,6 +80,15 @@
             {
                 -webkit-appearance: slider-vertical;
             }
+            footer
+            {
+                text-align : center;
+                font-weight: bold;
+                color : grey;
+                text-shadow : 0px 1px 0px #000;
+                margin : 50px;
+                font-size : 1.33em;
+            }
         </style>
         
         <!--Libs-->
@@ -87,7 +101,8 @@
         <script src="scripts/sounds/crisis.js"></script>
         <script src="scripts/sounds/resources.js"></script>
         <script src="scripts/Area.js"></script>
-        <script src="scripts/Skydome.js"></script>        
+        <script src="scripts/Skydome.js"></script>
+        <script src="scripts/Path.js"></script>
     </head>
     <body class="text-center">
         <h1><img src="images/logo.png" alt="Be A Savior"></h1>
@@ -109,6 +124,24 @@
                 Vous pouvez vous déplacer sur la planète Terre avec votre souris, cliquez et maintenez enfoncé tout en vous déplaçant pour tourner autour du globe.
                 <div class="clear"></div>
             </section>
+            <section>
+                <img src="images/tuto2.png" class="right" alt="" />
+                Des ressource humanitaires apparaissent de temps en temps à la surface du globe, elles correspondent aux réserves de médicament ou aux dons envers le ONG lors d'évènement ou de campagne par exemple.
+                <div class="clear"></div>
+            </section>
+            <section>
+                <img src="images/tuto3.png" alt="" />
+                Des crises humanitaires apparaissent également ! Guerres civiles, épidémies, catastrophes naturelles, c'est à vous de trouver la meilleur stratégie pour résoudre ces problèmes.
+                <div class="clear"></div>
+            </section>
+            <section>
+                <img src="images/tuto4.png" class="right" alt="" />
+                Pour cela, tracez des liens entre les ressources et les crises humanitaires. Attention ! Certaines crises s'étendent plus rapidement que d'autres !
+                <div class="clear"></div>
+            </section>
         </div>
+        <footer>
+            Jeu réalisé par l'équipe "Les Programmateurs" pour la Nuit de l'Info 2014 !
+        </footer>
     </body>
 </html>
