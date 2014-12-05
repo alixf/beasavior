@@ -9,12 +9,16 @@ window.onload = function()
 
     var scene = new THREE.Scene();
     
-    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 2100 );
     //var camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0.001, 1000 );
     scene.add(camera);
     
+    var skydome = new Skydome(THREE.ImageUtils.loadTexture('textures/skydome.jpg'));
+    scene.add(skydome);
+    console.log("hi");
     var vector = new THREE.Vector3();
     var raycaster = new THREE.Raycaster();
+
 
 	camera.position.z = 1000;
 	camera.lookAt(new THREE.Vector3(0,0,0));
@@ -40,8 +44,10 @@ window.onload = function()
 	controls.zoomSpeed   = 1.2;
 	controls.panSpeed    = 0.3;
 	controls.noRotate    = false;
-	controls.noZoom      = true;
+	controls.noZoom      = false;
 	controls.noPan       = true;
+	controls.minDistance = 500;
+	controls.maxDistance = 1200;
 
     var mouse = {x:0.0, y:0.0};
 	function onMouseMove(e)
@@ -62,6 +68,7 @@ window.onload = function()
     earth.rotateY(1.5);
     
     var lastTime = (new Date()).getTime();
+
     var render = function()
     {
         // Compute time
