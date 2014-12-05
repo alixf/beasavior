@@ -1,12 +1,12 @@
 window.onload = function()
 {
-
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var audio = create_sound(audioCtx,0,0,0);
 	//create a WebGL renderer, a camera, and a scene
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
-    
-	
+
     var scene = new THREE.Scene();
     
     //var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -35,9 +35,12 @@ window.onload = function()
     sphere.add(newSphere);
     
     
-	window.addEventListener('mousemove', onMouseMove, false);
-	window.addEventListener('resize', onWindowResize, false);
+    window.addEventListener('mousemove', onMouseMove, false);
+    window.addEventListener('resize', onWindowResize, false);
+
     
+
+
 	function onMouseMove(e)
     {
        /* mouseVector.x = 2 * (e.clientX / window.innerWidth) - 1;
@@ -88,7 +91,7 @@ window.onload = function()
         
         var newPosition = getXYZFromUV(0.917, 0.690, radius);
         newSphere.position.set(newPosition.x, newPosition.y, newPosition.z);
-        
+        update_sound(audio.osc, audio.gain, i, audio.pan, newPosition.x,newPosition.y,newPosition.z);
         renderer.render(scene, camera);
     };
 
