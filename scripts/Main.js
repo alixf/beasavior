@@ -26,7 +26,9 @@ window.onload = function()
     ];
     
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    var audio = create_sound(audioCtx,0,0,0);
+    var crisis = create_sound_crisis(audioCtx,0,0,0);
+    //var resources = create_sound_resources(audioCtx,0,0,0);
+	//create a WebGL renderer, a camera, and a scene
     
 	var container = $("#WebGL");
     var renderer = new THREE.WebGLRenderer();
@@ -57,7 +59,6 @@ window.onload = function()
 	var objectSelected = null;
     var pathStart = null;
     var pathEnd = null;
-
     var area1 = new Area(0.5, 0.26, "cool");
     var area2 = new Area(0.914, 0.705, "crisis");
     earth.add(area1);
@@ -170,8 +171,27 @@ window.onload = function()
 
         skydome.rotateY(dt * 0.033);
         
+        update_eq_crisis(crisis.low,crisis.mid,crisis.high,
+            document.querySelector('#slider1').value,
+            document.querySelector('#slider2').value,
+            document.querySelector('#slider3').value);
+
         requestAnimationFrame(render);
-        update_sound(audio.osc, audio.gain, 440, audio.pan, (area2.position.x-camera.position.x)/200,(area2.position.y-camera.position.y)/200,(area2.position.z-camera.position.z)/200);
+        update_position_crisis(crisis.pan,
+                        (area2.position.x-camera.position.x)/200,
+                        (area2.position.y-camera.position.y)/200,
+                        (area2.position.z-camera.position.z)/200
+                        );
+
+        //console.log(area1.position);
+
+
+
+        /*update_position_resources(resources.pan,
+                        (camera.position.x),
+                        (camera.position.y),
+                        (camera.position.z)
+                        );*/
 
         vector.set(mouse.x, mouse.y, 0.1).unproject(camera);
         raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
