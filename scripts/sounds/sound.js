@@ -9,10 +9,10 @@ panner.setPosition(100,100,100);
 
 // create Oscillator and gain node
 var modulator = audioCtx.createOscillator();
-modulator.frequency.value = 8;
+modulator.frequency.value = 1;
 
 var gainNode = audioCtx.createGain();
-gainNode.gain.value = 0.1;
+gainNode.gain.value = 10;
 
 var oscillator = audioCtx.createOscillator();
 oscillator.frequency.value = 300;
@@ -31,6 +31,7 @@ oscillator.type = 'square';
 oscillator.frequency.value = initialFreq;
 oscillator.detune.value = 100;
 oscillator.start();
+modulator.start();
 
 oscillator.onended = function() {
   console.log('Your tone has now stopped playing!');
@@ -42,10 +43,10 @@ return {osc:oscillator, gain:gainNode, pan:panner};
 
 function update_sound(osc, gain, f,pan,x,y,z)
 {
-	f = (i % 500);
+	f = (f % 500);
     osc.frequency.value = f;
     gain.gain.value = 0.02;
-    pan.setPosition(0,0,0);
+    pan.setPosition(x,y,z);
 }
 
 
