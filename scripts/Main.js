@@ -124,10 +124,12 @@ window.onload = function()
         {
             if(pathStart == null)
             {
+                console.log("ok1");
                 pathStart = objectSelected;
             }
             else if(pathEnd == null)
             {
+                console.log("ok2");
                 pathEnd = objectSelected;
                 
                 var path = new Path(pathStart.position, pathEnd.position);
