@@ -43,8 +43,10 @@ window.onload = function()
 	controls.zoomSpeed   = 1.2;
 	controls.panSpeed    = 0.3;
 	controls.noRotate    = false;
-	controls.noZoom      = true;
+	controls.noZoom      = false;
 	controls.noPan       = true;
+	controls.minDistance = 500;
+	controls.maxDistance = 1200;
 
     var mouse = {x:0.0, y:0.0};
 	function onMouseMove(e)
