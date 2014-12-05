@@ -12,8 +12,11 @@ var lowshelf = audioCtx.createBiquadFilter(),
     highshelf = audioCtx.createBiquadFilter();
 
  lowshelf.type = 3;
+ lowshelf.frequency.value = 300;
  mid.type = 5;
+ mid.frequency.value = 2000;
  highshelf.type = 4;
+ highshelf.frequency.value = 10000;
 
 // create Oscillator and gain node
 var modulator = audioCtx.createOscillator();
@@ -27,11 +30,11 @@ oscillator.frequency.value = 440;
 
 modulator.connect(gainNode);
 gainNode.connect(oscillator.frequency);
-oscillator.connect(lowshelf);
+oscillator.connect(panner);
+panner.connect(lowshelf);
 lowshelf.connect(mid);
 mid.connect(highshelf);
-highshelf.connect(panner);
-panner.connect(out);
+highshelf.connect(out);
 
 modulator.type = 'sawtooth';
 modulator.start();
@@ -53,6 +56,7 @@ function update_position_crisis(pan,x,y,z)
 
 function update_eq_crisis(low,mid,high,value_low,value_mid,value_high)
 {
+	console.log(value_low);
     low.gain.value = value_low;
     mid.gain.value = value_mid;
     high.gain.value = value_high;

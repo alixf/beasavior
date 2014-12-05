@@ -2,20 +2,42 @@ window.onload = function()
 {
     var cities = 
     [
-        {name : "Londres", x : 0.5023, y : 0.2141},
+        {name : "London", x : 0.5023, y : 0.2141},
+        {name : "Moscow", x: 0.5992, y: 0.2146},
+        {name : "Beijing", x: 0.8031, y: 0.3147},
+        {name : "Los Angeles", x: 0.1720, y: 0.2927},
+        {name : "Vancouver", x: 0.1659, y: 0.2219},
+        {name : "Mexico", x: 0.2452, y: 0.4026},
+        {name : "Bogota", x: 0.3112, y: 0.4929},
+        {name : "Moscow", x: 0.5992, y: 0.2146},
+        {name : "Valparaiso", x: 0.3112, y: 0.6514},
+        {name : "Punta Arenas", x: 0.3026, y: 0.7908},
+        {name : "Madrid", x: 0.4869, y: 0.2805},
+        {name : "Bombay", x: 0.7091, y: 0.4172},
+        {name : "Cairo", x: 0.5944, y: 0.3342},
+        {name : "Dakar", x: 0.4564, y: 0.3879},
+        {name : "Singapour", x: 0.7860, y: 0.4856},
+        {name : "Sydney", x: 0.9191, y: 0.6907},
+        {name : "New York", x: 0.2904, y: 0.2854},
+        {name : "Lima", x: 0.2806, y: 0.5491},
+        {name : "Sao Paulo", x: 0.3698, y: 0.6296},
+        {name : "Johannesburg", x: 0.5858, y: 0.6614},
+        {name : "Manille", x: 0.8355, y: 0.4124}
     ];
     
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    //var crisis = create_sound_crisis(audioCtx,0,0,0);
-    var resources = create_sound_resources(audioCtx,0,0,0);
+    var crisis = create_sound_crisis(audioCtx,0,0,0);
+    //var resources = create_sound_resources(audioCtx,0,0,0);
 	//create a WebGL renderer, a camera, and a scene
+    
+	var container = $("#WebGL");
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize( 800, 500 );
-    var container = $("#WebGL");
+    renderer.setSize(container.width(), container.height());
+    container.append(renderer.domElement);
 
     var scene = new THREE.Scene();
     
-    var camera = new THREE.PerspectiveCamera( 75, 800/500, 0.1, 2100 );
+    var camera = new THREE.PerspectiveCamera( 75, container.width()/container.height(), 0.1, 2100);
     //var camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0.001, 1000 );
     scene.add(camera);
     
@@ -33,9 +55,8 @@ window.onload = function()
 	var radius = 300;
     var earth = new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 64), sphereMaterial);
 	scene.add(earth);
-    var axisHelper = new THREE.AxisHelper( 700 );
-    scene.add( axisHelper );
-
+    //var axisHelper = new THREE.AxisHelper( 700 );
+    //scene.add( axisHelper );
     var area1 = new Area(0.5, 0.26, "cool");
     var area2 = new Area(0.914, 0.705, "crisis");
     earth.add(area1);
@@ -53,11 +74,11 @@ window.onload = function()
     var object = new THREE.Line(geometrySpline, new THREE.LineBasicMaterial( { color: 0xffffff } ), THREE.LineStrip);
     earth.add(object);
     
-    window.addEventListener('mousemove', onMouseMove, false);
+    container.on('mousemove', onMouseMove);
 	//window.addEventListener('resize', onWindowResize, false);
 
     
-    var controls = new THREE.OrbitControls(camera);
+    var controls = new THREE.OrbitControls(camera, container[0]);
 	controls.target.set(0, 0, 0);
 	controls.rotateSpeed = 0.4;
 	controls.zoomSpeed   = 1.2;
@@ -90,11 +111,18 @@ window.onload = function()
 
     var render = function()
     {
+        //console.log(document.querySelector('#slider1').value);
+        
         // Compute time
         var time = (new Date()).getTime();
         var dt = (time - lastTime) / 1000.0;
         lastTime = time;
         
+        update_eq_crisis(crisis.low,crisis.mid,crisis.high,
+            document.querySelector('#slider1').value,
+            document.querySelector('#slider2').value,
+            document.querySelector('#slider3').value);
+
         requestAnimationFrame(render);
         update_position_crisis(crisis.pan,
                         (area2.position.x-camera.position.x)/200,
@@ -102,7 +130,9 @@ window.onload = function()
                         (area2.position.z-camera.position.z)/200
                         );
 
-        console.log(area1.position);
+        //console.log(area1.position);
+
+
 
         /*update_position_resources(resources.pan,
                         (camera.position.x),
@@ -129,5 +159,4 @@ window.onload = function()
 
     render();
 
-    container.append(renderer.domElement);
 };
