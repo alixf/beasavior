@@ -54,7 +54,9 @@ window.onload = function()
     var earth = new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 64), sphereMaterial);
 	scene.add(earth);
     
-	
+	var objectSelected = null;
+    var pathStart = null;
+    var pathEnd = null;
 
     var area1 = new Area(0.5, 0.26, "cool");
     var area2 = new Area(0.914, 0.705, "crisis");
@@ -62,11 +64,9 @@ window.onload = function()
     earth.add(area2);
     //earth.add(area3);
 
-    var path = new Path(area1.position, area2.position);
-    earth.add(path);
     
     container.on('mousemove', onMouseMove);
-	//window.addEventListener('resize', onWindowResize, false);
+	container.on('click', onMouseDown);
 
     
     var controls = new THREE.OrbitControls(camera, container[0]);
@@ -111,9 +111,30 @@ window.onload = function()
     
 	function onMouseMove(e)
     {
-        mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
-        mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+        mouse.x = ( (e.pageX-container.offset().left) / container.width() ) * 2 - 1;
+        mouse.y = - ( (e.pageY-container.offset().top) / container.height() ) * 2 + 1;
     };
+    
+    function onMouseDown(e)
+    {
+        if(objectSelected != null)
+        {
+            if(pathStart == null)
+            {
+                pathStart = objectSelected;
+            }
+            else if(pathEnd == null)
+            {
+                pathEnd = objectSelected;
+                
+                var path = new Path(pathStart.position, pathEnd.position);
+                earth.add(path);
+                
+                pathStart = null;
+                pathEnd = null;
+            }
+        }
+    }
     
     function onWindowResize(e)
     {
@@ -147,8 +168,6 @@ window.onload = function()
         lastTime = time;
         chrono += dt;
 
-
-        
         skydome.rotateY(dt * 0.033);
         
         requestAnimationFrame(render);
@@ -156,12 +175,11 @@ window.onload = function()
 
         vector.set(mouse.x, mouse.y, 0.1).unproject(camera);
         raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
-        var intersections = raycaster.intersectObjects(scene.children, true);
+        
+        objectSelected = null;
+        var intersections = raycaster.intersectObjects(earth.children, true);
         for(i = 0; i < intersections.length; ++i)
-        {
-            if(intersections[i].object.hover != null)
-                intersections[i].object.hover();
-        }
+            objectSelected = intersections[i].object;
         
     	controls.update();
 	   	
