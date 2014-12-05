@@ -38,7 +38,7 @@ window.onload = function()
 	window.addEventListener('mousemove', onMouseMove, false);
 	window.addEventListener('resize', onWindowResize, false);
     
-	function onMouseMove(e)
+	
     var controls = new THREE.OrbitControls(camera);
 	controls.target.set(0, 0, 0);
 	controls.rotateSpeed = 0.4;
@@ -48,8 +48,9 @@ window.onload = function()
 	controls.noZoom      = true;
 	controls.noPan       = true;
 
+	function onMouseMove(e)
     {
-       /* mouseVector.x = 2 * (e.clientX / window.innerWidth) - 1;
+        /*mouseVector.x = 2 * (e.clientX / window.innerWidth) - 1;
 		mouseVector.y = 1 - 2 * ( e.clientY / window.innerHeight );
 
 		var raycaster = projector.pickingRay(mouseVector.clone(), camera);
@@ -95,7 +96,7 @@ window.onload = function()
         i++;
 	   	renderer.render( scene, camera )
         requestAnimationFrame(render);
-        sphere.rotateY(0.01);
+        //sphere.rotateY(0.01);
         
         var newPosition = getXYZFromUV(0.917, 0.690, radius);
         newSphere.position.set(newPosition.x, newPosition.y, newPosition.z);
