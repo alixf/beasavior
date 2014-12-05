@@ -54,11 +54,7 @@ window.onload = function()
     var earth = new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 64), sphereMaterial);
 	scene.add(earth);
     
-	var randomAreaInfos = generateAreas();
-	var area3 = new Area(cities[randomAreaInfos.id].x, cities[randomAreaInfos.id].y, randomAreaInfos.crisisOrCool);
-	while(areaUnavailable(area3)){
-		area3 = rerollArea;
-	}
+	
 
     var area1 = new Area(0.5, 0.26, "cool");
     var area2 = new Area(0.914, 0.705, "crisis");
@@ -86,7 +82,7 @@ window.onload = function()
 
     var mouse = {x:0.0, y:0.0};
 
-	function generateAreas(){
+	function generateArea(){
 		var ret;
 		var id = Math.floor((Math.random() * 10) + 0);
 		var crisisOrCool = Math.floor((Math.random()*100)+0);
@@ -98,7 +94,7 @@ window.onload = function()
 	}
 
 	function areaUnavailable(area){
-		var randomAreaInfos = generateAreas();
+		var randomAreaInfos = generateArea();
 		newArea = new Area(cities[randomAreaInfos.id].x, cities[randomAreaInfos.id].y, randomAreaInfos.crisisOrCool);
 		console.log("area is already a node. rerolling");
 	}
@@ -111,8 +107,6 @@ window.onload = function()
 				}
 			});
 		return true;
-
-		return newArea;
 	}
     
 	function onMouseMove(e)
@@ -129,11 +123,20 @@ window.onload = function()
 		camera.aspect = containerWidth / containerHeight;
 		camera.updateProjectionMatrix();
 	}
+
+	function addNewNode(){
+		var randomAreaInfos = generateArea();
+		var area = new Area(cities[randomAreaInfos.id].x, cities[randomAreaInfos.id].y, randomAreaInfos.crisisOrCool);
+		while(areaUnavailable(area)){
+			area = rerollArea;
+		}
+		earth.add(area);
+	}
     
     earth.rotateY(1.5);
     
     var lastTime = (new Date()).getTime();
-
+    var chrono = 0;
     var render = function()
     {
         //console.log(document.querySelector('#slider1').value);
@@ -142,6 +145,9 @@ window.onload = function()
         var time = (new Date()).getTime();
         var dt = (time - lastTime) / 1000.0;
         lastTime = time;
+        chrono += dt;
+
+
         
         skydome.rotateY(dt * 0.033);
         
@@ -159,6 +165,11 @@ window.onload = function()
         
     	controls.update();
 	   	
+    	if(chrono > 15){
+    		addNewNode();
+    		chrono = 0;
+    	}
+
 	   	earth.children.forEach(function(entry){
 	   		if(entry.update != null)
 	   			entry.update(dt);
