@@ -1,5 +1,10 @@
 window.onload = function()
 {
+    var cities = 
+    [
+        {name : "Londres", x : 0.5023, y : 0.2141},
+    ];
+    
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     var audio = create_sound(audioCtx,0,0,0);
 	//create a WebGL renderer, a camera, and a scene
@@ -92,7 +97,6 @@ window.onload = function()
 
         vector.set(mouse.x, mouse.y, 0.1).unproject(camera);
         raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
-        console.log(camera.position.x-area2.position.x);
         var intersections = raycaster.intersectObjects(scene.children, true);
         for(i = 0; i < intersections.length; ++i)
         {
