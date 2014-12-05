@@ -25,7 +25,9 @@ window.onload = function()
     ];
     
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    var audio = create_sound(audioCtx,0,0,0);
+    var crisis = create_sound_crisis(audioCtx,0,0,0);
+    //var resources = create_sound_resources(audioCtx,0,0,0);
+	//create a WebGL renderer, a camera, and a scene
     
 	var container = $("#WebGL");
     var renderer = new THREE.WebGLRenderer();
@@ -53,19 +55,18 @@ window.onload = function()
     var earth = new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 64), sphereMaterial);
 	scene.add(earth);
     
-	
-
+	var objectSelected = null;
+    var pathStart = null;
+    var pathEnd = null;
     var area1 = new Area(0.5, 0.26, "cool");
     var area2 = new Area(0.914, 0.705, "crisis");
     earth.add(area1);
     earth.add(area2);
     //earth.add(area3);
 
-    var path = new Path(area1.position, area2.position);
-    earth.add(path);
     
     container.on('mousemove', onMouseMove);
-	//window.addEventListener('resize', onWindowResize, false);
+	container.on('click', onMouseDown);
 
     
     var controls = new THREE.OrbitControls(camera, container[0]);
@@ -113,9 +114,30 @@ window.onload = function()
     
 	function onMouseMove(e)
     {
-        mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
-        mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+        mouse.x = ( (e.pageX-container.offset().left) / container.width() ) * 2 - 1;
+        mouse.y = - ( (e.pageY-container.offset().top) / container.height() ) * 2 + 1;
     };
+    
+    function onMouseDown(e)
+    {
+        if(objectSelected != null)
+        {
+            if(pathStart == null)
+            {
+                pathStart = objectSelected;
+            }
+            else if(pathEnd == null)
+            {
+                pathEnd = objectSelected;
+                
+                var path = new Path(pathStart.position, pathEnd.position);
+                earth.add(path);
+                
+                pathStart = null;
+                pathEnd = null;
+            }
+        }
+    }
     
     function onWindowResize(e)
     {
@@ -149,21 +171,37 @@ window.onload = function()
         lastTime = time;
         chrono += dt;
 
-
-        
         skydome.rotateY(dt * 0.033);
         
+        update_eq_crisis(crisis.low,crisis.mid,crisis.high,
+            document.querySelector('#slider1').value,
+            document.querySelector('#slider2').value,
+            document.querySelector('#slider3').value);
+
         requestAnimationFrame(render);
-        update_sound(audio.osc, audio.gain, 440, audio.pan, (area2.position.x-camera.position.x)/200,(area2.position.y-camera.position.y)/200,(area2.position.z-camera.position.z)/200);
+        update_position_crisis(crisis.pan,
+                        (area2.position.x-camera.position.x)/200,
+                        (area2.position.y-camera.position.y)/200,
+                        (area2.position.z-camera.position.z)/200
+                        );
+
+        //console.log(area1.position);
+
+
+
+        /*update_position_resources(resources.pan,
+                        (camera.position.x),
+                        (camera.position.y),
+                        (camera.position.z)
+                        );*/
 
         vector.set(mouse.x, mouse.y, 0.1).unproject(camera);
         raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
-        var intersections = raycaster.intersectObjects(scene.children, true);
+        
+        objectSelected = null;
+        var intersections = raycaster.intersectObjects(earth.children, true);
         for(i = 0; i < intersections.length; ++i)
-        {
-            if(intersections[i].object.hover != null)
-                intersections[i].object.hover();
-        }
+            objectSelected = intersections[i].object;
         
     	controls.update();
 	   	
