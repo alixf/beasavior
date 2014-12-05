@@ -77,10 +77,11 @@ window.onload = function()
         lastTime = time;
         
         requestAnimationFrame(render);
-        update_sound(audio.osc, audio.gain, 440, audio.pan, mouse.x*10,mouse.y*10,0);
+        update_sound(audio.osc, audio.gain, 440, audio.pan, (area2.position.x-camera.position.x)/200,(area2.position.y-camera.position.y)/200,(area2.position.z-camera.position.z)/200);
 
         vector.set(mouse.x, mouse.y, 0.1).unproject(camera);
         raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
+        console.log(camera.position.x-area2.position.x);
         var intersections = raycaster.intersectObjects(scene.children, true);
         for(i = 0; i < intersections.length; ++i)
         {
