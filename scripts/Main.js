@@ -2,7 +2,27 @@ window.onload = function()
 {
     var cities = 
     [
-        {name : "Londres", x : 0.5023, y : 0.2141},
+        {name : "London", x : 0.5023, y : 0.2141},
+        {name : "Moscow", x: 0.5992, y: 0.2146},
+        {name : "Beijing", x: 0.8031, y: 0.3147},
+        {name : "Los Angeles", x: 0.1720, y: 0.2927},
+        {name : "Vancouver", x: 0.1659, y: 0.2219},
+        {name : "Mexico", x: 0.2452, y: 0.4026},
+        {name : "Bogota", x: 0.3112, y: 0.4929},
+        {name : "Moscow", x: 0.5992, y: 0.2146},
+        {name : "Valparaiso", x: 0.3112, y: 0.6514},
+        {name : "Punta Arenas", x: 0.3026, y: 0.7908},
+        {name : "Madrid", x: 0.4869, y: 0.2805},
+        {name : "Bombay", x: 0.7091, y: 0.4172},
+        {name : "Cairo", x: 0.5944, y: 0.3342},
+        {name : "Dakar", x: 0.4564, y: 0.3879},
+        {name : "Singapour", x: 0.7860, y: 0.4856},
+        {name : "Sydney", x: 0.9191, y: 0.6907},
+        {name : "New York", x: 0.2904, y: 0.2854},
+        {name : "Lima", x: 0.2806, y: 0.5491},
+        {name : "Sao Paulo", x: 0.3698, y: 0.6296},
+        {name : "Johannesburg", x: 0.5858, y: 0.6614},
+        {name : "Manille", x: 0.8355, y: 0.4124}
     ];
     
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
