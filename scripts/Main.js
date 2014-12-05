@@ -64,19 +64,10 @@ window.onload = function()
     var area2 = new Area(0.914, 0.705, "crisis");
     earth.add(area1);
     earth.add(area2);
-    earth.add(area3);
+    //earth.add(area3);
 
-    var geometrySpline = new THREE.Geometry();
-    var i = 0;
-    var count = 64.0;
-    for(;i < count; ++i)
-        geometrySpline.vertices[i] = new THREE.Vector3(area1.position.x * (1-i/count) + area2.position.x * (i/count),
-                                                       area1.position.y * (1-i/count) + area2.position.y * (i/count),
-                                                       area1.position.z * (1-i/count) + area2.position.z * (i/count)).normalize().multiplyScalar(310);
-    
-    geometrySpline.computeLineDistances();
-    var object = new THREE.Line(geometrySpline, new THREE.LineBasicMaterial( { color: 0xffffff } ), THREE.LineStrip);
-    earth.add(object);
+    var path = new Path(area1.position, area2.position);
+    earth.add(path);
     
     container.on('mousemove', onMouseMove);
 	//window.addEventListener('resize', onWindowResize, false);
