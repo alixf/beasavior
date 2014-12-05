@@ -27,14 +27,15 @@ window.onload = function()
     
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     var audio = create_sound(audioCtx,0,0,0);
-	//create a WebGL renderer, a camera, and a scene
+    
+	var container = $("#WebGL");
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize( 800, 500 );
-    var container = $("#WebGL");
+    renderer.setSize(container.width(), container.height());
+    container.append(renderer.domElement);
 
     var scene = new THREE.Scene();
     
-    var camera = new THREE.PerspectiveCamera( 75, 800/500, 0.1, 2100 );
+    var camera = new THREE.PerspectiveCamera( 75, container.width()/container.height(), 0.1, 2100);
     //var camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0.001, 1000 );
     scene.add(camera);
     
@@ -52,7 +53,7 @@ window.onload = function()
 	var radius = 300;
     var earth = new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 64), sphereMaterial);
 	scene.add(earth);
-
+    
 	var randomAreaInfos = generateAreas();
 	var area3 = new Area(cities[randomAreaInfos.id].x, cities[randomAreaInfos.id].y, randomAreaInfos.crisisOrCool);
 	while(areaUnavailable(area3)){
@@ -77,11 +78,11 @@ window.onload = function()
     var object = new THREE.Line(geometrySpline, new THREE.LineBasicMaterial( { color: 0xffffff } ), THREE.LineStrip);
     earth.add(object);
     
-    window.addEventListener('mousemove', onMouseMove, false);
+    container.on('mousemove', onMouseMove);
 	//window.addEventListener('resize', onWindowResize, false);
 
     
-    var controls = new THREE.OrbitControls(camera);
+    var controls = new THREE.OrbitControls(camera, container[0]);
 	controls.target.set(0, 0, 0);
 	controls.rotateSpeed = 0.4;
 	controls.zoomSpeed   = 1.2;
@@ -144,6 +145,8 @@ window.onload = function()
 
     var render = function()
     {
+        //console.log(document.querySelector('#slider1').value);
+        
         // Compute time
         var time = (new Date()).getTime();
         var dt = (time - lastTime) / 1000.0;
@@ -173,6 +176,5 @@ window.onload = function()
 
     render();
 
-    container.append(renderer.domElement);
 };
 
