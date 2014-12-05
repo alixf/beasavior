@@ -9,7 +9,6 @@ window.onload = function()
         {name : "Vancouver", x: 0.1659, y: 0.2219},
         {name : "Mexico", x: 0.2452, y: 0.4026},
         {name : "Bogota", x: 0.3112, y: 0.4929},
-        {name : "Moscow", x: 0.5992, y: 0.2146},
         {name : "Valparaiso", x: 0.3112, y: 0.6514},
         {name : "Punta Arenas", x: 0.3026, y: 0.7908},
         {name : "Madrid", x: 0.4869, y: 0.2805},
@@ -94,20 +93,23 @@ window.onload = function()
 		return ret = {id : id, crisisOrCool : crisisOrCool};
 	}
 
-	function areaUnavailable(area){
+	function rerollArea(){
 		var randomAreaInfos = generateArea();
 		newArea = new Area(cities[randomAreaInfos.id].x, cities[randomAreaInfos.id].y, randomAreaInfos.crisisOrCool);
 		console.log("area is already a node. rerolling");
+		return newArea;
 	}
 
-	function rerollArea(area){
-		var newArea;
+
+	//doesn't work! :'(
+	function areaUnavailable(area){
+		/*var ret = false;
 		earth.children.forEach(function(entry){
 		   		if(entry.name == area.name){
-		   			return false;
+		   			ret = true;
 				}
-			});
-		return true;
+			});*/
+		return false;
 	}
     
 	function onMouseMove(e)
@@ -152,7 +154,7 @@ window.onload = function()
 		var randomAreaInfos = generateArea();
 		var area = new Area(cities[randomAreaInfos.id].x, cities[randomAreaInfos.id].y, randomAreaInfos.crisisOrCool);
 		while(areaUnavailable(area)){
-			area = rerollArea;
+			area = rerollArea();
 		}
 		earth.add(area);
 	}
