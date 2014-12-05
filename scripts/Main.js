@@ -54,10 +54,17 @@ window.onload = function()
     var earth = new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 64), sphereMaterial);
 	scene.add(earth);
     
+	var randomAreaInfos = generateAreas();
+	var area3 = new Area(cities[randomAreaInfos.id].x, cities[randomAreaInfos.id].y, randomAreaInfos.crisisOrCool);
+	while(areaUnavailable(area3)){
+		area3 = rerollArea;
+	}
+
     var area1 = new Area(0.5, 0.26, "cool");
     var area2 = new Area(0.914, 0.705, "crisis");
     earth.add(area1);
     earth.add(area2);
+    earth.add(area3);
 
     var geometrySpline = new THREE.Geometry();
     var i = 0;
@@ -87,6 +94,36 @@ window.onload = function()
 	controls.maxDistance = 1000;
 
     var mouse = {x:0.0, y:0.0};
+
+	function generateAreas(){
+		var ret;
+		var id = Math.floor((Math.random() * 10) + 0);
+		var crisisOrCool = Math.floor((Math.random()*100)+0);
+		if(crisisOrCool >= 65)
+			crisisOrCool = "cool";
+		else crisisOrCool = "crisis";
+
+		return ret = {id : id, crisisOrCool : crisisOrCool};
+	}
+
+	function areaUnavailable(area){
+		var randomAreaInfos = generateAreas();
+		newArea = new Area(cities[randomAreaInfos.id].x, cities[randomAreaInfos.id].y, randomAreaInfos.crisisOrCool);
+		console.log("area is already a node. rerolling");
+	}
+
+	function rerollArea(area){
+		var newArea;
+		earth.children.forEach(function(entry){
+		   		if(entry.name == area.name){
+		   			return false;
+				}
+			});
+		return true;
+
+		return newArea;
+	}
+    
 	function onMouseMove(e)
     {
         mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
@@ -131,12 +168,15 @@ window.onload = function()
         
     	controls.update();
 	   	
-        area1.update(dt);
-        area2.update(dt);
-        
+	   	earth.children.forEach(function(entry){
+	   		if(entry.update != null)
+	   			entry.update(dt);
+		});
+
        	renderer.render(scene, camera);
     };
 
     render();
 
 };
+
