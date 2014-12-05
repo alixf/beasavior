@@ -3,13 +3,13 @@ window.onload = function()
 
 	//create a WebGL renderer, a camera, and a scene
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
+    renderer.setSize( 800, 500 );
+    var container = $("#WebGL");
     
 	
     var scene = new THREE.Scene();
     
-    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 2100 );
+    var camera = new THREE.PerspectiveCamera( 75, 800/500, 0.1, 2100 );
     //var camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0.001, 1000 );
     scene.add(camera);
     
@@ -35,7 +35,7 @@ window.onload = function()
     earth.add(area2);
     
 	window.addEventListener('mousemove', onMouseMove, false);
-	window.addEventListener('resize', onWindowResize, false);
+	//window.addEventListener('resize', onWindowResize, false);
     
     var controls = new THREE.OrbitControls(camera);
 	controls.target.set(0, 0, 0);
@@ -51,8 +51,8 @@ window.onload = function()
     var mouse = {x:0.0, y:0.0};
 	function onMouseMove(e)
     {
-        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
     };
     
     function onWindowResize(e)
@@ -95,4 +95,6 @@ window.onload = function()
     };
 
     render();
+
+    container.append(renderer.domElement);
 };
